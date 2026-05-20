@@ -10,36 +10,53 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Title required" }, { status: 400 });
   }
 
-  const prompt = `You are an expert at making complex news stories accessible to people who have no background knowledge.
+  const prompt = `You are a senior analyst and writer who specialises in making complex news stories fully intelligible to an educated but non-specialist reader. Your context briefs are known for their depth — you do not just summarise what happened, you explain the full picture: the history, the science or mechanics behind it, the key actors, and the broader implications.
 
 News Story: "${title}"
 Summary: "${description || "No summary provided"}"
 
-Generate a context brief in JSON format that helps a complete outsider understand this story from the ground up:
+Write a deep context brief in JSON format. Each section should be substantive — multiple paragraphs where warranted. Be specific: name real people, dates, institutions, mechanisms. Do not be vague.
+
 {
-  "whatsHappening": "2-3 sentences explaining what's happening right now in plain English. No assumed knowledge.",
-  "backgroundContext": "2-3 sentences giving the essential history or context someone needs to understand WHY this is happening.",
+  "situation": "2–3 paragraphs describing precisely what is happening right now. Who are the actors? What actions have been taken? What is the immediate timeline of events?",
+
+  "historicalBackground": "3–4 paragraphs giving the full historical context a reader needs. Go back as far as necessary — if this is about Ebola, explain the history of Ebola outbreaks since 1976. If it is about a trade war, explain the relevant trade history. Name the key turning points, dates, and figures.",
+
+  "howItWorks": "2–3 paragraphs explaining the underlying mechanism, science, or system at play. If the story is about a virus, explain how the virus works. If it is about a financial crisis, explain the financial mechanism. If it is a geopolitical dispute, explain the structural forces at play. Make the non-obvious intelligible.",
+
+  "timeline": [
+    { "date": "Year or specific date", "event": "What happened — 1–2 sentences of specific detail." }
+  ],
+
   "keyPlayers": [
-    { "name": "Key person/organization", "role": "Who they are and why they matter in 1 sentence" }
+    { "name": "Person, country, or organisation", "role": "Their position and what they want or have done — 2–3 sentences." }
   ],
-  "whyItMatters": "2-3 sentences on the real-world implications — who is affected and how.",
+
+  "whyItMatters": "2–3 paragraphs on the real stakes. Who is affected and how severely? What are the downstream consequences — economic, political, humanitarian, scientific? Why should someone who does not live in the affected region care?",
+
+  "globalContext": "2 paragraphs placing this story inside a larger global trend or pattern. What larger forces does this reflect? Is this part of a cycle, a structural shift, or a one-off event?",
+
+  "expertPerspectives": [
+    { "perspective": "A specific analytical viewpoint or school of thought", "reasoning": "2–3 sentences explaining this perspective and the evidence or logic behind it." }
+  ],
+
   "keyTerms": [
-    { "term": "Jargon or technical term", "definition": "Simple plain-English definition" }
+    { "term": "Technical or specialist term", "definition": "A clear, 2-sentence plain-English definition." }
   ],
-  "biggerPicture": "How does this story connect to broader global trends or ongoing issues? 2 sentences.",
-  "whatToWatchNext": "What should readers follow to stay updated on this story? 1-2 sentences."
+
+  "whatToWatch": "1–2 paragraphs on what developments will be most consequential to follow, and why they will signal which direction this story is heading."
 }
 
-Return only valid JSON. No markdown, no code blocks.`;
+Return only valid JSON. No markdown, no code blocks. Write with the depth and seriousness of a Foreign Affairs analysis piece.`;
 
   try {
     const completion = await client.chat.completions.create({
       model: "llama-3.3-70b-versatile",
-      max_tokens: 1200,
+      max_tokens: 4096,
       messages: [
         {
           role: "system",
-          content: "You are an expert educator and journalist. Return only valid JSON, no markdown or code blocks.",
+          content: "You are a senior analyst and long-form journalist. Return only valid JSON, no markdown or code blocks. Write substantively and specifically — never vague.",
         },
         { role: "user", content: prompt },
       ],

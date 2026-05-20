@@ -6,11 +6,11 @@ import NewsCard from "./NewsCard";
 import { cn } from "@/lib/utils";
 
 const categories = [
-  { id: "world", label: "World", emoji: "🌍" },
-  { id: "tech", label: "Tech", emoji: "💻" },
-  { id: "ai", label: "AI", emoji: "🤖" },
-  { id: "business", label: "Business", emoji: "📈" },
-  { id: "science", label: "Science", emoji: "🔬" },
+  { id: "world", label: "World Affairs" },
+  { id: "tech", label: "Technology" },
+  { id: "ai", label: "AI & Science" },
+  { id: "business", label: "Business" },
+  { id: "science", label: "Science" },
 ];
 
 interface Article {
@@ -50,70 +50,68 @@ export default function NewsFeed() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-emerald-400 text-sm font-medium tracking-wider uppercase">News Feed</span>
-          </div>
-          <h2 className="text-2xl font-bold text-white">Today&apos;s World, Explained</h2>
-          <p className="text-slate-400 text-sm mt-1">Click &ldquo;Get Context&rdquo; on any article for an AI-powered deep dive.</p>
+          <p className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest mb-1">News Analysis</p>
+          <h2 className="text-2xl font-bold text-white">Current Affairs</h2>
+          <p className="text-[#666] text-xs font-sans mt-1">
+            Select any article — click &ldquo;Deep Context&rdquo; for a full analytical briefing.
+          </p>
         </div>
         <button
           onClick={() => loadNews(activeCategory)}
           disabled={loading}
-          className="p-2 text-slate-400 hover:text-white transition-colors disabled:opacity-50"
+          className="p-2 text-[#444] hover:text-[#888] transition-colors disabled:opacity-30 mt-1"
           title="Refresh"
         >
-          <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
+          <RefreshCw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
         </button>
       </div>
 
-      <div className="flex gap-2 mb-6 flex-wrap">
+      <div className="flex gap-0 mb-8 border-b border-[#1e1e1e] font-sans">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
             className={cn(
-              "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border",
+              "px-4 py-2.5 text-xs font-medium tracking-wide transition-colors duration-150 border-b-2 -mb-px",
               activeCategory === cat.id
-                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                : "bg-slate-800/50 text-slate-400 border-slate-700/50 hover:border-slate-600/50 hover:text-slate-300"
+                ? "text-[#c8a96e] border-[#c8a96e]"
+                : "text-[#555] border-transparent hover:text-[#888]"
             )}
           >
-            <span>{cat.emoji}</span>
             {cat.label}
           </button>
         ))}
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
-          <span className="ml-2 text-slate-400 text-sm">Loading news...</span>
+        <div className="flex items-center gap-2 py-12 text-[#444] font-sans">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-xs">Loading articles...</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-300 text-sm">
+        <div className="border border-[#2a1a1a] bg-[#110a0a] p-4 text-[#c87070] text-sm font-sans">
           {error === "NEWS_API_KEY not configured"
-            ? "Add your NewsAPI key to .env.local to load real news."
+            ? "Add NEWS_API_KEY to your environment variables."
             : error}
         </div>
       )}
 
       {!loading && !error && articles.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#1e1e1e]">
           {articles.map((article, i) => (
-            <NewsCard key={`${article.url}-${i}`} article={article} />
+            <div key={`${article.url}-${i}`} className="bg-[#0a0a0a]">
+              <NewsCard article={article} />
+            </div>
           ))}
         </div>
       )}
 
       {!loading && !error && articles.length === 0 && (
-        <div className="text-center py-16 text-slate-500">
-          No articles found for this category.
-        </div>
+        <p className="text-[#444] text-sm font-sans py-12">No articles available.</p>
       )}
     </div>
   );

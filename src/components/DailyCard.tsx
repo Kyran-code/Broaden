@@ -1,35 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp, Lightbulb, Zap, BookOpen, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface KeyIdea {
+interface KeyTerm {
   term: string;
+  definition: string;
+}
+
+interface Debate {
+  debate: string;
   explanation: string;
+}
+
+interface Misconception {
+  myth: string;
+  reality: string;
+}
+
+interface FurtherReading {
+  title: string;
+  author: string;
+  why: string;
 }
 
 interface DailyBrief {
   topic: string;
   category: string;
-  emoji: string;
-  hook: string;
-  whatIsIt: string;
-  whyItMatters: string;
-  keyIdeas: KeyIdea[];
-  realWorldExample: string;
-  commonMisconception: string;
-  buildingBlocks: string;
-  mindBlower: string;
+  openingEssay: string;
+  historicalOrigins: string;
+  coreMechanisms: string;
+  keyTermsGlossary: KeyTerm[];
+  keyDebates: Debate[];
+  caseStudy: string;
+  realWorldImplications: string;
+  commonMisconceptions: Misconception[];
+  futureOutlook: string;
+  furtherReading: FurtherReading[];
 }
 
 export default function DailyCard() {
   const [brief, setBrief] = useState<DailyBrief | null>(null);
   const [loading, setLoading] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetch = async () => {
+  const load = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -37,158 +52,194 @@ export default function DailyCard() {
       if (!res.ok) throw new Error("Failed to load");
       const data = await res.json();
       setBrief(data);
-      setExpanded(true);
     } catch {
-      setError("Failed to load today's topic. Check your API key.");
+      setError("Failed to generate briefing. Check your API key.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 rounded-2xl border border-indigo-500/20 overflow-hidden">
-      <div className="p-6 sm:p-8">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-          <span className="text-indigo-400 text-sm font-medium tracking-wider uppercase">Daily Discovery</span>
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <p className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest mb-1">Daily Briefing</p>
+          <h2 className="text-2xl font-bold text-white">Topic of the Day</h2>
         </div>
+      </div>
 
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              What's your unknown unknown today?
-            </h2>
-            <p className="text-slate-400 text-sm">
-              One topic, explained from zero to intermediate. Every day, something new.
-            </p>
-          </div>
-          <div className="text-5xl flex-shrink-0">{brief?.emoji || "🎯"}</div>
-        </div>
-
-        {!brief && !loading && (
+      {!brief && !loading && (
+        <div className="border border-[#1e1e1e] p-8 text-center">
+          <p className="text-[#666] text-sm font-sans mb-5 leading-relaxed">
+            Each day, one specialised topic — explained with the depth of a long-form essay.<br />
+            Expect 10–15 minutes of serious reading.
+          </p>
           <button
-            onClick={fetch}
-            className="mt-6 w-full sm:w-auto px-6 py-3 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 group"
+            onClick={load}
+            className="px-6 py-2.5 bg-white text-black text-sm font-sans font-semibold hover:bg-[#e8e8e8] transition-colors duration-150"
           >
-            <Sparkles className="w-4 h-4" />
-            Reveal Today&apos;s Topic
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Load Today&apos;s Briefing
           </button>
-        )}
+        </div>
+      )}
 
-        {loading && (
-          <div className="mt-6 flex items-center gap-3 text-indigo-300">
-            <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm">Generating your brief...</span>
+      {loading && (
+        <div className="border border-[#1e1e1e] p-8 text-center">
+          <p className="text-[#666] text-sm font-sans">Generating briefing — this may take a moment...</p>
+          <div className="flex justify-center mt-4 gap-1">
+            <span className="w-1 h-1 bg-[#444] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+            <span className="w-1 h-1 bg-[#444] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+            <span className="w-1 h-1 bg-[#444] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
-        )}
+        </div>
+      )}
 
-        {error && (
-          <div className="mt-4 p-4 bg-red-900/30 border border-red-500/30 rounded-xl text-red-300 text-sm">
-            {error}
+      {error && (
+        <div className="border border-[#2a1a1a] bg-[#110a0a] p-4 text-[#c87070] text-sm font-sans">
+          {error}
+        </div>
+      )}
+
+      {brief && (
+        <div className="animate-in">
+          {/* Header */}
+          <div className="border-b border-[#1e1e1e] pb-6 mb-8">
+            <span className="text-[#666] text-xs font-sans uppercase tracking-widest">{brief.category}</span>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mt-2 leading-tight">{brief.topic}</h3>
+            <p className="text-[#666] text-xs font-sans mt-3">Estimated reading time: 10–15 minutes</p>
           </div>
-        )}
 
-        {brief && (
-          <div className="mt-6 space-y-1">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-medium rounded-full border border-indigo-500/30">
-                {brief.category}
-              </span>
-              <span className="px-2.5 py-1 bg-green-500/10 text-green-400 text-xs font-medium rounded-full border border-green-500/20">
-                Beginner Friendly
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-white">{brief.topic}</h3>
+          <div className="space-y-10">
+            {/* Opening Essay */}
+            <Section label="Overview">
+              <Prose text={brief.openingEssay} />
+            </Section>
 
-            <div className="mt-3 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
-              <p className="text-indigo-200 italic text-sm leading-relaxed">&ldquo;{brief.hook}&rdquo;</p>
-            </div>
+            {/* Historical Origins */}
+            <Section label="Historical Origins">
+              <Prose text={brief.historicalOrigins} />
+            </Section>
 
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="mt-4 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
-            >
-              {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              {expanded ? "Collapse brief" : "Read full brief"}
-            </button>
+            {/* Core Mechanisms */}
+            <Section label="How It Works">
+              <Prose text={brief.coreMechanisms} />
+            </Section>
 
-            {expanded && (
-              <div className="mt-4 space-y-5 animate-in slide-in-from-top-2 duration-300">
-                <Section icon={<BookOpen className="w-4 h-4" />} title="What Is It?" color="blue">
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.whatIsIt}</p>
-                </Section>
-
-                <Section icon={<Zap className="w-4 h-4" />} title="Why It Matters" color="yellow">
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.whyItMatters}</p>
-                </Section>
-
-                <Section icon={<Lightbulb className="w-4 h-4" />} title="Key Concepts" color="purple">
-                  <div className="space-y-2">
-                    {brief.keyIdeas?.map((idea, i) => (
-                      <div key={i} className="flex gap-3">
-                        <span className="text-purple-400 font-bold text-sm mt-0.5 flex-shrink-0">{idea.term}:</span>
-                        <span className="text-slate-300 text-sm leading-relaxed">{idea.explanation}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Section>
-
-                <Section icon={<ArrowRight className="w-4 h-4" />} title="Real-World Example" color="green">
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.realWorldExample}</p>
-                </Section>
-
-                <Section icon={<AlertCircle className="w-4 h-4" />} title="Common Misconception" color="red">
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.commonMisconception}</p>
-                </Section>
-
-                <div className="p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-xl">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">🤯</span>
-                    <span className="text-yellow-400 text-xs font-semibold uppercase tracking-wider">Mind Blower</span>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.mindBlower}</p>
+            {/* Key Terms */}
+            {brief.keyTermsGlossary?.length > 0 && (
+              <Section label="Glossary of Key Terms">
+                <div className="space-y-4">
+                  {brief.keyTermsGlossary.map((item, i) => (
+                    <div key={i} className="border-l-2 border-[#c8a96e] pl-4">
+                      <p className="text-white font-sans font-semibold text-sm">{item.term}</p>
+                      <p className="text-[#999] text-sm leading-relaxed mt-1">{item.definition}</p>
+                    </div>
+                  ))}
                 </div>
+              </Section>
+            )}
 
-                <Section icon={<ArrowRight className="w-4 h-4" />} title="Go Deeper" color="indigo">
-                  <p className="text-slate-300 text-sm leading-relaxed">{brief.buildingBlocks}</p>
-                </Section>
-              </div>
+            {/* Key Debates */}
+            {brief.keyDebates?.length > 0 && (
+              <Section label="Key Debates & Controversies">
+                <div className="space-y-6">
+                  {brief.keyDebates.map((d, i) => (
+                    <div key={i}>
+                      <p className="text-white font-sans font-semibold text-sm mb-2">{d.debate}</p>
+                      <Prose text={d.explanation} />
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {/* Case Study */}
+            {brief.caseStudy && (
+              <Section label="Case Study">
+                <div className="border-l-2 border-[#333] pl-5">
+                  <Prose text={brief.caseStudy} />
+                </div>
+              </Section>
+            )}
+
+            {/* Real World Implications */}
+            <Section label="Real-World Implications">
+              <Prose text={brief.realWorldImplications} />
+            </Section>
+
+            {/* Misconceptions */}
+            {brief.commonMisconceptions?.length > 0 && (
+              <Section label="Common Misconceptions">
+                <div className="space-y-4">
+                  {brief.commonMisconceptions.map((m, i) => (
+                    <div key={i} className="border border-[#1e1e1e] p-4">
+                      <p className="text-[#888] text-xs font-sans uppercase tracking-wider mb-1">Myth</p>
+                      <p className="text-[#ccc] text-sm italic mb-3">&ldquo;{m.myth}&rdquo;</p>
+                      <p className="text-[#888] text-xs font-sans uppercase tracking-wider mb-1">Reality</p>
+                      <p className="text-[#aaa] text-sm leading-relaxed">{m.reality}</p>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {/* Future Outlook */}
+            <Section label="Where This Is Heading">
+              <Prose text={brief.futureOutlook} />
+            </Section>
+
+            {/* Further Reading */}
+            {brief.furtherReading?.length > 0 && (
+              <Section label="Further Reading">
+                <div className="space-y-3">
+                  {brief.furtherReading.map((r, i) => (
+                    <div key={i} className="flex gap-3">
+                      <span className="text-[#444] font-sans text-sm flex-shrink-0">{String(i + 1).padStart(2, "0")}.</span>
+                      <div>
+                        <p className="text-white font-sans text-sm font-medium">{r.title}</p>
+                        {r.author && <p className="text-[#666] text-xs font-sans">{r.author}</p>}
+                        <p className="text-[#888] text-xs mt-1 leading-relaxed">{r.why}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Section>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function Section({
-  icon,
-  title,
-  color,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  color: string;
-  children: React.ReactNode;
-}) {
-  const colorMap: Record<string, string> = {
-    blue: "text-blue-400 bg-blue-500/10 border-blue-500/20",
-    yellow: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
-    purple: "text-purple-400 bg-purple-500/10 border-purple-500/20",
-    green: "text-green-400 bg-green-500/10 border-green-500/20",
-    red: "text-red-400 bg-red-500/10 border-red-500/20",
-    indigo: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
-  };
+function Section({ label, children }: { label: string; children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className={cn("p-4 border rounded-xl", colorMap[color])}>
-      <div className={cn("flex items-center gap-2 mb-2 font-semibold text-xs uppercase tracking-wider", colorMap[color].split(" ")[0])}>
-        {icon}
-        {title}
-      </div>
-      {children}
+    <div className="border-t border-[#1e1e1e] pt-6">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center gap-2 w-full text-left mb-4 group"
+      >
+        <span className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest flex-1">{label}</span>
+        {collapsed
+          ? <ChevronDown className="w-3 h-3 text-[#444] group-hover:text-[#888] transition-colors" />
+          : <ChevronUp className="w-3 h-3 text-[#444] group-hover:text-[#888] transition-colors" />
+        }
+      </button>
+      {!collapsed && children}
+    </div>
+  );
+}
+
+function Prose({ text }: { text: string }) {
+  if (!text) return null;
+  const paragraphs = text.split(/\n+/).filter(Boolean);
+  return (
+    <div className="space-y-4">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="text-[#c0c0c0] text-[15px] leading-7">{p}</p>
+      ))}
     </div>
   );
 }
