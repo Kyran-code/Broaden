@@ -1,5 +1,6 @@
 import DailyCard from "@/components/DailyCard";
 import NewsFeed from "@/components/NewsFeed";
+import LearningLog from "@/components/LearningLog";
 
 export default function Home() {
   return (
@@ -34,6 +35,12 @@ export default function Home() {
         </section>
         <section>
           <NewsFeed />
+        </section>
+
+        <section>
+          <div className="border-t border-[#1e1e1e] pt-10">
+            <LearningLog />
+          </div>
         </section>
       </main>
 

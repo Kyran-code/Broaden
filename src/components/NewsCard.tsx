@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import ChatBox from "./ChatBox";
 
 interface Article {
   title: string;
@@ -218,6 +219,12 @@ export default function NewsCard({ article }: { article: Article }) {
             <BriefSection label="What to Watch">
               <Prose text={brief.whatToWatch} />
             </BriefSection>
+
+            <ChatBox
+              context={{ title: article.title, source: article.source }}
+              contextType="article"
+              placeholder="Ask anything about this story..."
+            />
           </div>
         )}
       </div>

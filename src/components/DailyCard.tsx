@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import ChatBox from "./ChatBox";
 
 interface KeyTerm {
   term: string;
@@ -205,6 +206,13 @@ export default function DailyCard() {
                 </div>
               </Section>
             )}
+
+            {/* Chat */}
+            <ChatBox
+              context={{ topic: brief.topic, category: brief.category }}
+              contextType="topic"
+              placeholder={`Ask anything about ${brief.topic}...`}
+            />
           </div>
         </div>
       )}
