@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
 const BASE_URL = "https://newsapi.org/v2";
 
+// Singapore uses domain filtering via /everything since ST isn't a NewsAPI source ID
+const SINGAPORE_DOMAINS = "straitstimes.com,channelnewsasia.com,todayonline.com,businesstimes.com.sg";
+const SINGAPORE_QUERY = "Singapore";
+
 // Whitelisted reputable sources per category (NewsAPI source IDs)
 const categorySources: Record<string, string[]> = {
   world: [
@@ -70,6 +74,30 @@ export async function GET(req: NextRequest) {
 
   if (!NEWS_API_KEY) {
     return NextResponse.json({ error: "NEWS_API_KEY not configured" }, { status: 500 });
+  }
+
+  // Singapore: use /everything with domain filter (ST has no NewsAPI source ID)
+  if (category === "singapore") {
+    const url = `${BASE_URL}/everything?q=${encodeURIComponent(SINGAPORE_QUERY)}&domains=${SINGAPORE_DOMAINS}&language=en&sortBy=publishedAt&pageSize=15&apiKey=${NEWS_API_KEY}`;
+    try {
+      const res = await fetch(url, { next: { revalidate: 1800 } });
+      const data = await res.json();
+      if (data.status !== "ok") throw new Error(data.message || "NewsAPI error");
+      const articles = data.articles
+        .filter((a: RawArticle) => a.title && a.description && a.url && !a.title.includes("[Removed]") && a.description.length > 60)
+        .map((a: RawArticle) => ({
+          title: a.title,
+          description: a.description,
+          url: a.url,
+          image: a.urlToImage,
+          publishedAt: a.publishedAt,
+          source: a.source.name,
+        }));
+      return NextResponse.json({ articles });
+    } catch (err) {
+      console.error("Singapore news error:", err);
+      return NextResponse.json({ error: "Failed to fetch Singapore news" }, { status: 500 });
+    }
   }
 
   const sources = (categorySources[category] || categorySources.world).join(",");

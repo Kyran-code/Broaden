@@ -6,6 +6,7 @@ import NewsCard from "./NewsCard";
 import { cn } from "@/lib/utils";
 
 const categories = [
+  { id: "singapore", label: "Singapore" },
   { id: "world", label: "World Affairs" },
   { id: "tech", label: "Technology" },
   { id: "ai", label: "AI & Science" },
@@ -23,7 +24,7 @@ interface Article {
 }
 
 export default function NewsFeed() {
-  const [activeCategory, setActiveCategory] = useState("world");
+  const [activeCategory, setActiveCategory] = useState("singapore");
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
