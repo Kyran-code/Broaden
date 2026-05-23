@@ -69,13 +69,13 @@ export default function NewsFeed() {
         </button>
       </div>
 
-      <div className="flex gap-0 mb-8 border-b border-[#1e1e1e] font-sans">
+      <div className="flex gap-0 mb-8 border-b border-[#1e1e1e] font-sans overflow-x-auto scrollbar-none" style={{ WebkitOverflowScrolling: "touch" }}>
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
             className={cn(
-              "px-4 py-2.5 text-xs font-medium tracking-wide transition-colors duration-150 border-b-2 -mb-px",
+              "px-4 py-2.5 text-xs font-medium tracking-wide transition-colors duration-150 border-b-2 -mb-px whitespace-nowrap flex-shrink-0",
               activeCategory === cat.id
                 ? "text-[#c8a96e] border-[#c8a96e]"
                 : "text-[#555] border-transparent hover:text-[#888]"

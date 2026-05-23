@@ -99,17 +99,17 @@ export default function NewsCard({ article }: { article: Article }) {
 
       <div className="p-4">
         <div className="flex items-center gap-2 mb-2 font-sans">
-          <span className="text-[#555] text-xs">{article.source}</span>
+          <span className="text-[#555] text-sm">{article.source}</span>
           <span className="text-[#333]">·</span>
-          <span className="text-[#555] text-xs">{timeAgo(article.publishedAt)}</span>
+          <span className="text-[#555] text-sm">{timeAgo(article.publishedAt)}</span>
         </div>
 
-        <h3 className="text-[#e0e0e0] font-sans font-semibold text-sm leading-snug mb-2 line-clamp-3">
+        <h3 className="text-[#e0e0e0] font-sans font-semibold text-base leading-snug mb-2 line-clamp-3">
           {article.title}
         </h3>
 
         {article.description && (
-          <p className="text-[#666] text-xs font-sans leading-relaxed mb-3 line-clamp-2">
+          <p className="text-[#666] text-sm font-sans leading-relaxed mb-3 line-clamp-2">
             {article.description}
           </p>
         )}
@@ -161,8 +161,8 @@ export default function NewsCard({ article }: { article: Article }) {
                 <div className="space-y-2">
                   {brief.timeline.map((t, i) => (
                     <div key={i} className="flex gap-3">
-                      <span className="text-[#c8a96e] text-xs font-sans font-semibold flex-shrink-0 mt-0.5 w-24">{t.date}</span>
-                      <p className="text-[#999] text-xs font-sans leading-relaxed">{t.event}</p>
+                      <span className="text-[#c8a96e] text-sm font-sans font-semibold flex-shrink-0 mt-0.5 w-24">{t.date}</span>
+                      <p className="text-[#999] text-sm font-sans leading-relaxed">{t.event}</p>
                     </div>
                   ))}
                 </div>
@@ -174,8 +174,8 @@ export default function NewsCard({ article }: { article: Article }) {
                 <div className="space-y-3">
                   {brief.keyPlayers.map((p, i) => (
                     <div key={i} className="border-l-2 border-[#2a2a2a] pl-3">
-                      <p className="text-[#e0e0e0] text-xs font-sans font-semibold">{p.name}</p>
-                      <p className="text-[#888] text-xs font-sans leading-relaxed mt-0.5">{p.role}</p>
+                      <p className="text-[#e0e0e0] text-sm font-sans font-semibold">{p.name}</p>
+                      <p className="text-[#888] text-sm font-sans leading-relaxed mt-0.5">{p.role}</p>
                     </div>
                   ))}
                 </div>
@@ -195,8 +195,8 @@ export default function NewsCard({ article }: { article: Article }) {
                 <div className="space-y-3">
                   {brief.expertPerspectives.map((e, i) => (
                     <div key={i}>
-                      <p className="text-[#c8a96e] text-xs font-sans font-semibold mb-1">{e.perspective}</p>
-                      <p className="text-[#888] text-xs font-sans leading-relaxed">{e.reasoning}</p>
+                      <p className="text-[#c8a96e] text-sm font-sans font-semibold mb-1">{e.perspective}</p>
+                      <p className="text-[#888] text-sm font-sans leading-relaxed">{e.reasoning}</p>
                     </div>
                   ))}
                 </div>
@@ -208,8 +208,8 @@ export default function NewsCard({ article }: { article: Article }) {
                 <div className="space-y-2">
                   {brief.keyTerms.map((t, i) => (
                     <div key={i}>
-                      <span className="text-[#e0e0e0] text-xs font-sans font-semibold">{t.term}: </span>
-                      <span className="text-[#888] text-xs font-sans">{t.definition}</span>
+                      <span className="text-[#e0e0e0] text-sm font-sans font-semibold">{t.term}: </span>
+                      <span className="text-[#888] text-sm font-sans">{t.definition}</span>
                     </div>
                   ))}
                 </div>
@@ -235,7 +235,7 @@ export default function NewsCard({ article }: { article: Article }) {
 function BriefSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest mb-2">{label}</p>
+      <p className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest mb-2.5">{label}</p>
       {children}
     </div>
   );
@@ -247,7 +247,7 @@ function Prose({ text }: { text: string }) {
   return (
     <div className="space-y-2">
       {paragraphs.map((p, i) => (
-        <p key={i} className="text-[#999] text-xs font-sans leading-relaxed">{p}</p>
+        <p key={i} className="text-[#999] text-sm font-sans leading-relaxed">{p}</p>
       ))}
     </div>
   );
