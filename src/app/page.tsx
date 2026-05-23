@@ -1,8 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import DailyCard from "@/components/DailyCard";
 import NewsFeed from "@/components/NewsFeed";
 import LearningLog from "@/components/LearningLog";
+import { cn } from "@/lib/utils";
+
+type TopSection = "brief" | "log";
 
 export default function Home() {
+  const [topSection, setTopSection] = useState<TopSection>("brief");
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <header className="border-b border-[#1e1e1e] sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur-sm">
@@ -18,30 +26,56 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-8 border-b border-[#1e1e1e]">
-        <p className="text-[#666] text-xs font-sans uppercase tracking-widest mb-3">Daily Intelligence</p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-white leading-snug max-w-2xl">
-          What you don&apos;t know you don&apos;t know.
-        </h1>
-        <p className="mt-3 text-[#888] text-sm font-sans leading-relaxed max-w-xl">
-          One in-depth topic briefing per day. Live news with full analytical context.
-          Written for the curious mind that wants more than headlines.
-        </p>
-      </div>
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 pt-8 space-y-16">
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 space-y-16 pt-10">
+        {/* Top section: Daily Brief ↔ Learning Log toggle */}
         <section>
-          <DailyCard />
+          {/* Section header with toggle */}
+          <div className="flex items-end justify-between mb-6 border-b border-[#1e1e1e] pb-0">
+            <div
+              className="flex gap-0 overflow-x-auto scrollbar-none"
+              style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch" }}
+            >
+              <TabButton
+                active={topSection === "brief"}
+                onClick={() => setTopSection("brief")}
+                label="Daily Brief"
+                sublabel="Today's topic"
+              />
+              <TabButton
+                active={topSection === "log"}
+                onClick={() => setTopSection("log")}
+                label="Learning Log"
+                sublabel="Track & retain"
+              />
+            </div>
+          </div>
+
+          {topSection === "brief" && (
+            <div className="animate-in">
+              <DailyCard />
+            </div>
+          )}
+
+          {topSection === "log" && (
+            <div className="animate-in">
+              <div className="mb-6">
+                <p className="text-[#c8a96e] text-xs font-sans uppercase tracking-widest mb-1">Learning Log</p>
+                <h2 className="text-2xl font-bold text-white">What Did You Learn Today?</h2>
+                <p className="text-[#666] text-xs font-sans mt-1">
+                  Write freely — AI will categorise, extract concepts, and help you retain it.
+                </p>
+              </div>
+              <LearningLog />
+            </div>
+          )}
         </section>
+
+        {/* News feed — always visible */}
         <section>
           <NewsFeed />
         </section>
 
-        <section>
-          <div className="border-t border-[#1e1e1e] pt-10">
-            <LearningLog />
-          </div>
-        </section>
       </main>
 
       <footer className="border-t border-[#1e1e1e] py-6">
@@ -51,5 +85,32 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  label,
+  sublabel,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  sublabel: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "px-5 py-3 text-left border-b-2 -mb-px transition-colors duration-150 flex-shrink-0 whitespace-nowrap",
+        active ? "border-[#c8a96e]" : "border-transparent"
+      )}
+    >
+      <p className={cn("text-sm font-sans font-semibold transition-colors", active ? "text-white" : "text-[#555] hover:text-[#888]")}>
+        {label}
+      </p>
+      <p className="text-[#444] text-xs font-sans mt-0.5">{sublabel}</p>
+    </button>
   );
 }

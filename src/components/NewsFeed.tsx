@@ -69,7 +69,7 @@ export default function NewsFeed() {
         </button>
       </div>
 
-      <div className="flex gap-0 mb-8 border-b border-[#1e1e1e] font-sans overflow-x-auto scrollbar-none" style={{ WebkitOverflowScrolling: "touch" }}>
+      <div className="flex gap-0 mb-8 border-b border-[#1e1e1e] font-sans overflow-x-auto scrollbar-none" style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch" }}>
         {categories.map((cat) => (
           <button
             key={cat.id}
