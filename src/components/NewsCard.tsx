@@ -63,7 +63,7 @@ export default function NewsCard({ article }: { article: Article }) {
       const res = await fetch("/api/brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: article.title, description: article.description }),
+        body: JSON.stringify({ title: article.title, description: article.description, publishedAt: article.publishedAt }),
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
